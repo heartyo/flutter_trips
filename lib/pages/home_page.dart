@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_swiper/flutter_swiper.dart';
 class HomePage extends StatefulWidget {
   @override
   HomePageState createState() => new HomePageState();
@@ -13,7 +13,13 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return  Scaffold(
      body: Center(
-       child: Text('首页'),
+      child: Column(
+        children: <Widget>[
+          Container(
+
+          ),
+        ],
+      ),
      )
     );
   }
