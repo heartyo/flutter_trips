@@ -6,9 +6,7 @@ class TravelPage extends StatefulWidget {
 }
 
 class TravelPageState extends State<TravelPage> {
-  final PageController _pageController = PageController(
-    initialPage: 0,
-  );
+
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
