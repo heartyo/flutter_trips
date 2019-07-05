@@ -11,7 +11,7 @@ class MyPageState extends State<MyPage> {
   Widget build(BuildContext context) {
     return  Scaffold(
      body: Center(
-       child: Text('首页'),
+       child: Text('我的'),
      )
     );
   }
