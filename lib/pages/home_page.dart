@@ -6,6 +6,7 @@ import 'package:flutter_trips/model/grid_nav_model.dart';
 import 'package:flutter_trips/model/home_model.dart';
 import 'package:flutter_trips/model/sales_box_model.dart';
 import 'package:flutter_trips/widget/local_nav.dart';
+import 'package:flutter_trips/widget/grid_nav.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -53,39 +54,40 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xf2f2f2),
+        backgroundColor: Color(0xf2f2f2),
         body: Stack(
-      children: <Widget>[
-        MediaQuery.removePadding(
-          removeTop: true,
-          context: context,
-          child: NotificationListener(
-            onNotification: (scrollNotifaction) {
-              if (scrollNotifaction is ScrollUpdateNotification &&
-                  scrollNotifaction.depth == 0) {
-                _onScroll(scrollNotifaction.metrics.pixels);
-              }
-            },
-            child: _ListView,
-          ),
-        ),
-        Opacity(
-          opacity: appBarAlpha,
-          child: Container(
-            height: 80,
-            decoration: BoxDecoration(
-              color: Colors.white,
-            ),
-            child: Center(
-              child: Padding(
-                padding: EdgeInsets.only(top: 20),
-                child: Text('首页'),
+          children: <Widget>[
+            MediaQuery.removePadding(
+              removeTop: true,
+              context: context,
+              child: NotificationListener(
+                onNotification: (scrollNotifaction) {
+                  if (scrollNotifaction is ScrollUpdateNotification &&
+                      scrollNotifaction.depth == 0) {
+                    _onScroll(scrollNotifaction.metrics.pixels);
+                  }
+                },
+                child: _ListView,
               ),
             ),
-          ),
-        ),
-      ],
-    ));
+            Opacity(
+              opacity: appBarAlpha,
+              child: Container(
+                height: 80,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                ),
+                child: Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 20),
+                    child: Text('首页'),
+                  ),
+                ),
+              ),
+            ),
+
+          ],
+        ));
   }
 
   Widget get _ListView {
@@ -96,6 +98,8 @@ class HomePageState extends State<HomePage> {
           padding: EdgeInsets.fromLTRB(7, 0, 7, 4),
           child: LocalNav(localNavList: localNavList),
         ),
+
+
       ],
     );
   }

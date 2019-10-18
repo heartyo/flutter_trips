@@ -1,5 +1,3 @@
-
-
 import 'package:flutter_trips/model/common_model.dart';
 import 'package:flutter_trips/model/config_model.dart';
 import 'package:flutter_trips/model/grid_nav_model.dart';
@@ -43,5 +41,4 @@ class HomeModel {
       salesBox: SalesBoxModel.fromJson(json['salesBox']),
     );
   }
-
 }
