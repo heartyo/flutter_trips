@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
+const CACH_URLS = ['m.ctrip.com/','m.ctrip.html5/','m.ctrip.com/html5'];
+
 class WebView extends StatefulWidget {
   final String url;
   final String statusBarColor;
@@ -16,7 +18,7 @@ class WebView extends StatefulWidget {
       this.statusBarColor,
       this.title,
       this.hideAppBar,
-      this.backForbid});
+      this.backForbid=false});
 
   @override
   _WebViewState createState() => _WebViewState();
@@ -29,6 +31,7 @@ class _WebViewState extends State<WebView> {
 
   StreamSubscription<WebViewHttpError> _onHttpError;
 
+  bool existing = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -40,6 +43,15 @@ class _WebViewState extends State<WebView> {
         .listen((WebViewStateChanged webChange) {
       switch (webChange.type) {
         case WebViewState.startLoad:
+          if(_isToMain(webChange.url)){
+              if(widget.backForbid) {//禁止返回加载当前页面
+                flutterWebviewPlugin.launch(widget.url);
+              }else{
+                Navigator.pop(context);
+                existing = true;
+
+              }
+          }
           break;
         default:
           break;
@@ -49,6 +61,18 @@ class _WebViewState extends State<WebView> {
         flutterWebviewPlugin.onHttpError.listen((WebViewHttpError error) {});
   }
 
+  _isToMain(String url){
+    bool contain = false;
+    for(final value in CACH_URLS){
+      if(url?.endsWith(value)??false){
+        contain  =true;
+        break;
+      }
+      return contain;
+
+    }
+
+  }
   @override
   void dispose() {
     super.dispose();

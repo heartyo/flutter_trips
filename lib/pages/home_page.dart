@@ -39,6 +39,7 @@ class HomePageState extends State<HomePage> {
       setState(() {
         netString = json.encode(model.config);
         localNavList = model.localNavList;
+        gridNavModel = model.gridNav;
       });
     } catch (e) {
       print(e);
@@ -85,7 +86,6 @@ class HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-
           ],
         ));
   }
@@ -98,8 +98,12 @@ class HomePageState extends State<HomePage> {
           padding: EdgeInsets.fromLTRB(7, 0, 7, 4),
           child: LocalNav(localNavList: localNavList),
         ),
-
-
+        Padding(
+          padding: EdgeInsets.fromLTRB(7, 0, 7, 4),
+          child: GridNav(
+            gridNavModel: gridNavModel,
+          ),
+        ),
       ],
     );
   }
