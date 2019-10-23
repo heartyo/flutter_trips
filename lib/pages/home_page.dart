@@ -7,6 +7,7 @@ import 'package:flutter_trips/model/home_model.dart';
 import 'package:flutter_trips/model/sales_box_model.dart';
 import 'package:flutter_trips/widget/local_nav.dart';
 import 'package:flutter_trips/widget/grid_nav.dart';
+import 'package:flutter_trips/widget/sub_nav.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -39,6 +40,7 @@ class HomePageState extends State<HomePage> {
       setState(() {
         netString = json.encode(model.config);
         localNavList = model.localNavList;
+        subNavList = model.subNavList;
         gridNavModel = model.gridNav;
       });
     } catch (e) {
@@ -102,6 +104,12 @@ class HomePageState extends State<HomePage> {
           padding: EdgeInsets.fromLTRB(7, 0, 7, 4),
           child: GridNav(
             gridNavModel: gridNavModel,
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.fromLTRB(7, 0, 7, 4),
+          child: SubNav(
+            subNavList: subNavList,
           ),
         ),
       ],
