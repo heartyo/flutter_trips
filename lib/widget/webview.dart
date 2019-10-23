@@ -49,7 +49,6 @@ class _WebViewState extends State<WebView> {
               }else{
                 Navigator.pop(context);
                 existing = true;
-
               }
           }
           break;
@@ -75,11 +74,11 @@ class _WebViewState extends State<WebView> {
   }
   @override
   void dispose() {
-    super.dispose();
     _onUrlChanged.cancel();
     _onStateChanged.cancel();
     _onHttpError.cancel();
     flutterWebviewPlugin.dispose();
+    super.dispose();
   }
 
   @override
@@ -94,8 +93,7 @@ class _WebViewState extends State<WebView> {
     return Scaffold(
       body: Column(
         children: <Widget>[
-          _appBar(
-              Color(int.parse('0xff' + statusBarColorStr)), backButtonColor),
+          _appBar(Color(int.parse('0xff' + statusBarColorStr)), backButtonColor),
           Expanded(
               child: WebviewScaffold(
             url: widget.url,
@@ -122,11 +120,16 @@ class _WebViewState extends State<WebView> {
       );
     }
     return Container(
+      color: backgroundColor,
+      padding: EdgeInsets.fromLTRB(0, 40, 0, 10),
       child: FractionallySizedBox(
         widthFactor: 1,
         child: Stack(
           children: <Widget>[
             GestureDetector(
+              onTap: (){
+                Navigator.pop(context);
+              },
               child: Container(
                 margin: EdgeInsets.only(left: 10),
                 child: Icon(
