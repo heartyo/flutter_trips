@@ -5,10 +5,12 @@ import 'package:flutter_trips/model/common_model.dart';
 import 'package:flutter_trips/model/grid_nav_model.dart';
 import 'package:flutter_trips/model/home_model.dart';
 import 'package:flutter_trips/model/sales_box_model.dart';
+import 'package:flutter_trips/widget/loading_container.dart';
 import 'package:flutter_trips/widget/local_nav.dart';
 import 'package:flutter_trips/widget/grid_nav.dart';
 import 'package:flutter_trips/widget/sales_box.dart';
 import 'package:flutter_trips/widget/sub_nav.dart';
+import 'package:flutter_trips/widget/webview.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -20,12 +22,6 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  List _imageUrls = [
-    'http://pic9.nipic.com/20100923/2531170_140325352643_2.jpg',
-    'http://pic15.nipic.com/20110628/1369025_192645024000_2.jpg',
-    'http://pic41.nipic.com/20140508/18609517_112216473140_2.jpg'
-  ];
-
   double appBarAlpha = 0;
   String netString = "aa";
   List<CommonModel> localNavList = [];
@@ -35,62 +31,57 @@ class HomePageState extends State<HomePage> {
   SalesBoxModel salesBoxModel;
   bool _loading = true;
 
-  _loadData() async {
+  Future<Null> _handleRefesh() async {
     try {
       HomeModel model = await HomeDao.fetch();
       setState(() {
         netString = json.encode(model.config);
         localNavList = model.localNavList;
+        bannerList = model.bannerList;
         subNavList = model.subNavList;
         gridNavModel = model.gridNav;
         salesBoxModel = model.salesBox;
+        _loading = false;
       });
     } catch (e) {
       print(e);
+      setState(() {
+        _loading = false;
+      });
     }
   }
 
   @override
   void initState() {
     super.initState();
-    _loadData();
+    _handleRefesh();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Color(0xf2f2f2),
-        body: Stack(
-          children: <Widget>[
-            MediaQuery.removePadding(
-              removeTop: true,
-              context: context,
-              child: NotificationListener(
-                onNotification: (scrollNotifaction) {
-                  if (scrollNotifaction is ScrollUpdateNotification &&
-                      scrollNotifaction.depth == 0) {
-                    _onScroll(scrollNotifaction.metrics.pixels);
-                  }
-                },
-                child: _ListView,
-              ),
-            ),
-            Opacity(
-              opacity: appBarAlpha,
-              child: Container(
-                height: 80,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                ),
-                child: Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 20),
-                    child: Text('首页'),
-                  ),
-                ),
-              ),
-            ),
-          ],
+        body: LoadingContainer(
+          isLoading: _loading,
+          child: Stack(
+            children: <Widget>[
+              MediaQuery.removePadding(
+                  removeTop: true,
+                  context: context,
+                  child: RefreshIndicator(
+                      child: NotificationListener(
+                        onNotification: (scrollNotifaction) {
+                          if (scrollNotifaction is ScrollUpdateNotification &&
+                              scrollNotifaction.depth == 0) {
+                            _onScroll(scrollNotifaction.metrics.pixels);
+                          }
+                        },
+                        child: _ListView,
+                      ),
+                      onRefresh: _handleRefesh)),
+              _appBar,
+            ],
+          ),
         ));
   }
 
@@ -122,16 +113,47 @@ class HomePageState extends State<HomePage> {
     );
   }
 
+  Widget get _appBar {
+    return Opacity(
+      opacity: appBarAlpha,
+      child: Container(
+        height: 80,
+        decoration: BoxDecoration(
+          color: Colors.white,
+        ),
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.only(top: 20),
+            child: Text('首页'),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget get _banner {
     return Container(
       height: 220,
       child: Swiper(
-        itemCount: _imageUrls.length,
+        itemCount: bannerList.length,
         autoplay: true,
         itemBuilder: (BuildContext context, int index) {
-          return Image.network(
-            _imageUrls[index],
-            fit: BoxFit.fill,
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                CommonModel model = bannerList[index];
+                return WebView(
+                  url: model.url,
+                  statusBarColor: model.statusBarColor,
+                  title: model.title,
+                  hideAppBar: model.hideAppBar,
+                );
+              }));
+            },
+            child: Image.network(
+              bannerList[index].icon,
+              fit: BoxFit.fill,
+            ),
           );
         },
         pagination: SwiperPagination(),
